@@ -54,6 +54,54 @@ function slide(wrapper, items) {
         }
         items.style.left=`${items.offsetLeft-posX2}px`
     }
+    function dragEnd(){
+        posFinal=items.offsetLeft
+        if(posFinal-posInitial < -threshold){
+            shiftSlide(1,"drag")
+        }
+        else if(posFinal-posInitial>threshold){
+            shiftSlide(-1,"drag")
+        }
+        else{
+            items.style.left=posInitial+"px"
+        }
+        document.onmouseup=null
+        document.onmousemove=null
+    }
+    function shiftSlide(direction,action){
+        addClass(items,"transition-all duration-200")
+        if(allowShift){
+            if(!action)posInitial=items.offsetLeft
+            if(direction==1){
+                items.style.left= `${posInitial-slideSize}px`
+                index++
+            }
+            else if(direction== -1){
+                items.style.left= `${posInitial+slideSize}px`
+                index--
+            }
+        }
+        allowShift=false
+    }
+    function checkIndex(){
+        setTimeout(()=>{
+            removeClass(items,"transition-all duration-200")
+        },200)
+        if(index==-1){
+            items.style.left = -(slidesLength*slideSize)+"px"
+            index=slidesLength-1
+        }
+        if(index==slidesLength-itemToShow){
+            items.style.left = -((slidesLength-itemToShow-1)*slideSize)+'px'
+            index = slidesLength - itemToShow - 1
+        }
+
+        if(index == slidesLength || index === slidesLength -1){
+            items.style.left = '0px'
+            index=0
+        }
+        allowShift =  true
+    }
 
 }
 if (carouselId) {
